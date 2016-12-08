@@ -1,0 +1,12 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<servers>
+  <server id="82fab2f8-efd5-4b3c-bea0-376630214c92" name="127.0.0.1(MySql)[all]" database="all" dbtype="MySql">
+    <connectionstring><![CDATA[server=127.0.0.1;user id=root; password=root; Port=3306;database=; pooling=false]]></connectionstring>
+  </server>
+  <server id="66d40ff0-14d8-4e61-8e72-a2178c0b7b8a" name="192.168.100.20:1522/ORCL(Oracle)" database="192.168.100.20:1522/ORCL" dbtype="Oracle">
+    <connectionstring><![CDATA[Data Source=192.168.100.20:1522/ORCL;User Id=CEMS_CRM;Password=123456;Integrated Security=no;Min Pool Size=1;Max Pool Size=10]]></connectionstring>
+  </server>
+  <server id="60807699-c9cf-4577-a6ff-4b787faaccc2" name="JG-PC(SQL Server2008)[MyDB]" database="MyDB" dbtype="SqlServer9">
+    <connectionstring><![CDATA[Data Source=JG-PC;Initial Catalog=MyDB;User Id=sa;Password=123456]]></connectionstring>
+  </server>
+</servers>
