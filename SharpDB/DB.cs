@@ -36,6 +36,7 @@ namespace SharpDB
         }
         #endregion
 
+
         #region 属性
 
         private AccessType _AccessType = AccessType.MsSql;
@@ -189,13 +190,23 @@ namespace SharpDB
 
         #region Ado.Net 对象
 
+        private static object locker = new object();
         private DbConnection _DBConn = null;
         internal DbConnection DBConn
         {
             get
             {
-                _DBConn = DBFactory.CreateConnection();
-                _DBConn.ConnectionString = ConnectionString;
+                if (_DBConn == null)
+                {
+                    lock (locker)
+                    {
+                        if (_DBConn==null)
+                        {
+                            _DBConn = DBFactory.CreateConnection();
+                            _DBConn.ConnectionString = ConnectionString;
+                        }
+                    }
+                }
                 return _DBConn;
             }
         }
@@ -524,14 +535,6 @@ namespace SharpDB
         #region private 
         private void PrepareCommand(DbCommand cmd, DbConnection conn, DbTransaction trans, string cmdText, IDataParameter[] cmdParms, int times = 30, CommandType cmdType = CommandType.Text)
         {
-            if (trans != null)
-            {
-                conn = trans.Connection;
-            }
-            else
-            {
-                conn = GetDBConn(conn);
-            }            
             if (conn.State != ConnectionState.Open)
                 conn.Open();
             cmd.Connection = conn;

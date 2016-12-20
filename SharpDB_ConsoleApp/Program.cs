@@ -19,25 +19,23 @@ namespace SharpDB_ConsoleApp
 
         static void Main(string[] args)
         {
-            DB db = new DB(AccessType.OracleDDTek);
-            DBInfo dbInfo = db.Info;
-            var lstTableNames = dbInfo.TableNames;
-            lstTableNames.Remove("PARAM_VALUES_TAB");
+            //DB db = new DB(AccessType.OracleDDTek);
+            //DBInfo dbInfo = db.Info;
 
 
-            lstTableNames = lstTableNames.Where(t => !t.Contains("SYS_IOT") && !t.Contains("MGMT_")).ToList();
+            //int pageSize = 10;
+            //int currentPage = 1;
+            //string fields = "*";
+            //string orderString = "CREATE_TIME asc"; string whereString = "LEN(EMAIL)>0";
+            //string tablename = "BASE_USER";
+            //int recordCount = 0;
+            //DataTable data = null;
 
-            Dictionary<string, long> dict = new Dictionary<string, long>();
-            foreach (string tableName in lstTableNames)
-            {
-                string query_sql = "select count(1) from " + tableName;
-                long lg = db.GetSingle<long>(query_sql);
-                dict.Add(tableName, lg);
-            }
+            //data= PageUtil.GetDataTableByPager(pageSize, currentPage, fields, orderString, whereString, tablename, out recordCount);
 
-            var sortDict = dict.OrderByDescending(t => t.Value).ToDictionary(k => k.Key, v => v.Value);
+            DB db = new DB(AccessType.MsSql);
             
-
+         
         }
 
       

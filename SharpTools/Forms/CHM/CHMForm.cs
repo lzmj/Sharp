@@ -57,70 +57,84 @@ namespace SharpTools
             thread.Start();
         }
 
+
+        string defaultHtml = "数据库表目录.html";
+        string chm_html_path = string.Empty;
+        string indexHtmlpath = string.Empty;
+        /// <summary>
+        /// 生成表结构 html文件
+        /// </summary>
+        private void Builder()
+        {
+            //使用目录
+            string useDir = string.Empty;
+            //if (CkRetainHtml.Checked)//保留html文件
+            //{
+            useDir = Environment.GetFolderPath(Environment.SpecialFolder.DesktopDirectory);
+            //}
+            //else
+            //{
+            //    useDir = Path.GetTempPath();
+            //}
+
+            
+            chm_html_path = Path.Combine(useDir, txtCHM_Name.Text);
+            string tempPath = chm_html_path;
+            if (!Directory.Exists(tempPath))
+            {
+                Directory.CreateDirectory(tempPath);
+            }
+            else
+            {
+                Directory.Delete(tempPath, true);
+                Directory.CreateDirectory(tempPath);
+            }
+
+            indexHtmlpath = Path.Combine(tempPath, defaultHtml);
+
+            DB db = new DB(connectionModel.DbType, connectionModel.ConnectionString);
+            DBInfo dbInfo = db.Info;
+
+            Dictionary<string, string> dict_tabComment = dbInfo.GetAllTableComment();
+
+            ChmHtmlHelper.CreateDirHtml("数据库表目录", dict_tabComment, indexHtmlpath);
+
+
+            //创建表结构的html
+            tempPath = Path.Combine(tempPath, "表结构");
+            if (!Directory.Exists(tempPath))
+            {
+                Directory.CreateDirectory(tempPath);
+            }
+            else
+            {
+                Directory.Delete(tempPath, true);
+                Directory.CreateDirectory(tempPath);
+            }
+
+            List<TableInfo> lstTableInfo = dbInfo.GetAllTableInfos();
+            ChmHtmlHelper.CreateHtml(lstTableInfo, tempPath);
+        }
         private void CHMCompile()
         {
+            if (string.IsNullOrWhiteSpace(chm_html_path))
+            {
+                Builder();
+            }
             txtCHM_Name.Enabled = false;
-            CkRetainHtml.Enabled = false;
+            //CkRetainHtml.Enabled = false;
             btnMakeCHM.Enabled = false;
             btnMakeCHM.Text = "导出中...";
             try
             {
-                //使用目录
-                string useDir = string.Empty;
-                //if (CkRetainHtml.Checked)//保留html文件
-                //{
-                    useDir = Environment.GetFolderPath(Environment.SpecialFolder.DesktopDirectory);
-                //}
-                //else
-                //{
-                //    useDir = Path.GetTempPath();
-                //}
-                
-                string defaultHtml = "数据库表目录.html";
-                string chm_html_path = Path.Combine(useDir, txtCHM_Name.Text);
-                string tempPath = chm_html_path;
-                if (!Directory.Exists(tempPath))
-                {
-                    Directory.CreateDirectory(tempPath);
-                }
-                else
-                {
-                    Directory.Delete(tempPath, true);
-                    Directory.CreateDirectory(tempPath);
-                }
-     
-                string indexHtmlpath = Path.Combine(tempPath, defaultHtml);
-
-                DB db = new DB(connectionModel.DbType, connectionModel.ConnectionString);
-                DBInfo dbInfo = db.Info;
-
-                Dictionary<string, string> dict_tabComment = dbInfo.GetAllTableComment();
-                
-                ChmHtmlHelper.CreateDirHtml("数据库表目录", dict_tabComment, indexHtmlpath);
-
-
-                //创建表结构的html
-                tempPath = Path.Combine(tempPath, "表结构");
-                if (!Directory.Exists(tempPath))
-                {
-                    Directory.CreateDirectory(tempPath);
-                }
-                else
-                {
-                    Directory.Delete(tempPath, true);
-                    Directory.CreateDirectory(tempPath);
-                }
-
-                List<TableInfo> lstTableInfo = dbInfo.GetAllTableInfos();
-                ChmHtmlHelper.CreateHtml(lstTableInfo, tempPath);
-
                 //编译CHM文档
                 ChmHelp c3 = new ChmHelp();
                 c3.DefaultPage = defaultHtml;
                 c3.Title = txtCHM_Name.Text;
                 c3.ChmFileName = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Desktop), c3.Title + ".chm");
                 c3.SourcePath = chm_html_path;
-                string result = c3.Compile(CkRetainHtml.Checked);
+                //string result = c3.Compile(CkRetainHtml.Checked);
+                string result = c3.Compile(true);
                 if (string.IsNullOrWhiteSpace(result))
                 {
                     MessageBox.Show("导出CHM成功！");
@@ -131,7 +145,7 @@ namespace SharpTools
                 {
                     MessageBox.Show(result);
                     this.Close();
-                    if (CkRetainHtml.Checked)//保留html文件
+                    //if (CkRetainHtml.Checked)//保留html文件
                     {
                         Process.Start(indexHtmlpath);
                     }
@@ -142,7 +156,7 @@ namespace SharpTools
                 MessageBox.Show("导出CHM失败！" + ex.Message);
             }
             txtCHM_Name.Enabled = true;
-            CkRetainHtml.Enabled = true;
+            //CkRetainHtml.Enabled = true;
             btnMakeCHM.Enabled = true;
             btnMakeCHM.Text = "导出";
             
@@ -150,8 +164,19 @@ namespace SharpTools
 
         private void CHMForm_Load(object sender, EventArgs e)
         {
+            CkRetainHtml.Visible = false;
             txtCHM_Name.Text = connectionModel.Database.Replace("/",".") + "表结构信息";
             btnMakeCHM.Focus();
+        }
+
+        private void btnBuilder_Click(object sender, EventArgs e)
+        {
+            Builder();
+            if (!string.IsNullOrWhiteSpace(chm_html_path))
+            {
+                MessageBox.Show("表结构html生成成功！");
+                Process.Start(chm_html_path);
+            }
         }
     }
 }

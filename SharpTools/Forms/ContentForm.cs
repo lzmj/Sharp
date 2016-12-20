@@ -43,8 +43,8 @@ namespace SharpTools
         {
             List<string> lstEnums = ConnectionModel.DbType.GetListEnums();
             ckl_DBTypes.Items.Add(ConnectionModel.DbType);
-            lstEnums.Remove(ConnectionModel.DbType.ToString());
-            ckl_DBTypes.Items.AddRange(lstEnums.ToArray());
+            //lstEnums.Remove(ConnectionModel.DbType.ToString());
+            //ckl_DBTypes.Items.AddRange(lstEnums.ToArray());
             ckl_DBTypes.SelectedIndex = 0;
             initCheck(0);
         }

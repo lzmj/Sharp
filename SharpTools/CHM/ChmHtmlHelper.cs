@@ -54,8 +54,8 @@ namespace SharpTools.CHM
             code.AppendLine("        }");
             code.AppendLine("        .styletab");
             code.AppendLine("        {");
-            code.AppendLine("            font-size: 14px;");
-            code.AppendLine("            padding-top: 15px;");
+            code.AppendLine("            font-size: 20px;");
+            code.AppendLine("            padding-top: 10px;");
             code.AppendLine("        }");
             code.AppendLine("        a");
             code.AppendLine("        {");
@@ -166,7 +166,7 @@ namespace SharpTools.CHM
                 code.AppendLine("                        <caption>");
                 code.AppendLine("        <div class=\"styletab\">{0}{1}{2}</div>".FormatString(
                     tab.TableName,
-                    "<span style='float: left; margin-top: 6px;'>" + tab.TabComment + "</span>",
+                    "<span style='float: left; margin-top: 6px;font-size:18px;'>" + tab.TabComment + "</span>",
                     "<a href='../数据库表目录.html' style='float: right; margin-top: 6px;'>返回目录</a>"));
                 code.AppendLine("                        </caption>");
 

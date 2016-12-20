@@ -336,7 +336,8 @@ namespace SharpTools
                     strSql = "SELECT column_name,COLUMN_COMMENT as comments FROM INFORMATION_SCHEMA.COLUMNS WHERE table_schema = '" + Db.DBConn.Database + "' and table_name = '" + tableName + "'";
                     break;
                 case DataBaseType.MsSql:
-                    strSql = @"SELECT objname AS column_name,value AS comments FROM ::fn_listextendedproperty (NULL, 'user', 'dbo', 'table', '" + tableName + "', 'column', default) ";
+                    //strSql = @"SELECT objname AS column_name,value AS comments FROM ::fn_listextendedproperty (NULL, 'user', 'dbo', 'table', '" + tableName + "', 'column', default) ";
+                    strSql = @"SELECT b.name AS column_name,value AS comments FROM ::fn_listextendedproperty (NULL,'user', 'dbo', 'table', '" + tableName + "', 'column', default) a right JOIN (select name,colid from syscolumns where id=object_id('" + tableName + "')) b ON a.objname = b.name COLLATE Chinese_PRC_CI_AS ORDER BY b.colid asc";
                     break;
                 case DataBaseType.Oracle:
                     strSql = @"Select  column_name ,comments From user_col_comments Where table_name ='" + tableName + "'";
