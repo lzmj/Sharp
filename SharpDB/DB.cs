@@ -196,17 +196,8 @@ namespace SharpDB
         {
             get
             {
-                if (_DBConn == null)
-                {
-                    lock (locker)
-                    {
-                        if (_DBConn==null)
-                        {
-                            _DBConn = DBFactory.CreateConnection();
-                            _DBConn.ConnectionString = ConnectionString;
-                        }
-                    }
-                }
+                _DBConn = DBFactory.CreateConnection();
+                _DBConn.ConnectionString = ConnectionString;
                 return _DBConn;
             }
         }

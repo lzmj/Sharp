@@ -237,6 +237,26 @@ namespace SharpDB
             }
         }
 
+        /// <summary>
+        /// 当前数据库是否存在当前表
+        /// </summary>
+        /// <param name="table_Name">表名</param>
+        /// <returns></returns>
+        public bool IsExistTable(string table_Name)
+        {
+            return TableNames.Contains(table_Name, StringComparer.OrdinalIgnoreCase);
+        }
+
+        /// <summary>
+        /// 当前表是否存在当前列
+        /// </summary>
+        /// <param name="table_Name">表名</param>
+        /// <param name="column_Name">列名</param>
+        /// <returns></returns>
+        public bool IsExistColumn(string table_Name,string column_Name)
+        {
+            return this[table_Name].Contains(column_Name, StringComparer.OrdinalIgnoreCase);
+        }
 
         /// <summary>
         /// 当前数据库所有的表名及对应所有的列信息
