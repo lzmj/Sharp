@@ -17,28 +17,39 @@ namespace SharpDB_ConsoleApp
     class Program
     {
 
+        static string connStr = @"data source=10.1.19.189\MSSQLSERVER1;uid=aiws;pwd=aiws;database=AIWS";
         static void Main(string[] args)
         {
-            //DB db = new DB(AccessType.OracleDDTek);
-            //DBInfo dbInfo = db.Info;
+            DB db = new DB(AccessType.MsSql, connStr);
+
+            string strSql = "SELECT * FROM ZDSJ_CT_WDZX";
+
+            DataTable data = db.QueryTable(strSql);
 
 
-            //int pageSize = 10;
-            //int currentPage = 1;
-            //string fields = "*";
-            //string orderString = "CREATE_TIME asc"; string whereString = "LEN(EMAIL)>0";
-            //string tablename = "BASE_USER";
-            //int recordCount = 0;
-            //DataTable data = null;
 
-            //data= PageUtil.GetDataTableByPager(pageSize, currentPage, fields, orderString, whereString, tablename, out recordCount);
 
-            DB db = new DB(AccessType.MsSql);
-            
-         
+
         }
 
-      
+
+        void ExecTableDesc()
+        {
+            DB db = new DB(AccessType.MsSql, connStr);
+            DBInfo dbInfo = db.Info;
+            string strSql = "SELECT TABLE_NAME,DESCRIPTION FROM dbo.DICT_DATA_TABLE";
+            DataTable data = db.QueryTable(strSql);
+            foreach (DataRow dr in data.Rows)
+            {
+                string tabName = dr["TABLE_NAME"].ToString();
+                string desc = dr["DESCRIPTION"].ToString();
+                if (dbInfo.IsExistTable(tabName))
+                {
+                    dbInfo.UpsertTableComment(tabName, desc);
+                }
+            }
+        }
+
 
         static void SW(Action act)
         {
