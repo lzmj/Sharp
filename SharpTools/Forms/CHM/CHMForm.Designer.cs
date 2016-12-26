@@ -32,14 +32,13 @@
             this.txtCHM_Name = new System.Windows.Forms.TextBox();
             this.label1 = new System.Windows.Forms.Label();
             this.btnMakeCHM = new System.Windows.Forms.Button();
-            this.CkRetainHtml = new System.Windows.Forms.CheckBox();
             this.btnBuilder = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
             // txtCHM_Name
             // 
             this.txtCHM_Name.Location = new System.Drawing.Point(127, 60);
-            this.txtCHM_Name.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.txtCHM_Name.Margin = new System.Windows.Forms.Padding(4);
             this.txtCHM_Name.Name = "txtCHM_Name";
             this.txtCHM_Name.Size = new System.Drawing.Size(368, 25);
             this.txtCHM_Name.TabIndex = 0;
@@ -56,8 +55,8 @@
             // 
             // btnMakeCHM
             // 
-            this.btnMakeCHM.Location = new System.Drawing.Point(788, 59);
-            this.btnMakeCHM.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.btnMakeCHM.Location = new System.Drawing.Point(756, 59);
+            this.btnMakeCHM.Margin = new System.Windows.Forms.Padding(4);
             this.btnMakeCHM.Name = "btnMakeCHM";
             this.btnMakeCHM.Size = new System.Drawing.Size(100, 29);
             this.btnMakeCHM.TabIndex = 2;
@@ -65,20 +64,9 @@
             this.btnMakeCHM.UseVisualStyleBackColor = true;
             this.btnMakeCHM.Click += new System.EventHandler(this.btnMakeCHM_Click);
             // 
-            // CkRetainHtml
-            // 
-            this.CkRetainHtml.AutoSize = true;
-            this.CkRetainHtml.Location = new System.Drawing.Point(523, 63);
-            this.CkRetainHtml.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
-            this.CkRetainHtml.Name = "CkRetainHtml";
-            this.CkRetainHtml.Size = new System.Drawing.Size(121, 19);
-            this.CkRetainHtml.TabIndex = 3;
-            this.CkRetainHtml.Text = "保留html文件";
-            this.CkRetainHtml.UseVisualStyleBackColor = true;
-            // 
             // btnBuilder
             // 
-            this.btnBuilder.Location = new System.Drawing.Point(651, 60);
+            this.btnBuilder.Location = new System.Drawing.Point(567, 60);
             this.btnBuilder.Name = "btnBuilder";
             this.btnBuilder.Size = new System.Drawing.Size(114, 28);
             this.btnBuilder.TabIndex = 4;
@@ -93,13 +81,12 @@
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(963, 196);
             this.Controls.Add(this.btnBuilder);
-            this.Controls.Add(this.CkRetainHtml);
             this.Controls.Add(this.btnMakeCHM);
             this.Controls.Add(this.label1);
             this.Controls.Add(this.txtCHM_Name);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
-            this.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.Margin = new System.Windows.Forms.Padding(4);
             this.MaximizeBox = false;
             this.MinimizeBox = false;
             this.Name = "CHMForm";
@@ -117,7 +104,6 @@
         private System.Windows.Forms.TextBox txtCHM_Name;
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.Button btnMakeCHM;
-        private System.Windows.Forms.CheckBox CkRetainHtml;
         private System.Windows.Forms.Button btnBuilder;
     }
 }

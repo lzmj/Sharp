@@ -66,6 +66,7 @@
     <Compile Include="PageUtil.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="RandomExtension.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="dll\DDTek.Oracle.dll" />

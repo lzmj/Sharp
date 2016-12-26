@@ -62,8 +62,11 @@ namespace SharpDB
                 para.ParameterName = parameterName;
                 para.Value = (objvalue ?? DBNull.Value);
 
+                object newValue;
                 ColumnInfo cInfo = Info[tableName, name];
-                para.DbType = GetValueDbType(cInfo, objvalue, this.AccessType);
+                para.DbType = GetValueDbType(cInfo, objvalue, this.AccessType, out newValue);
+                para.Value = newValue;
+
                 lstParam.Add(para);
             }
             insert_sql = sb_beforeSQL.ToString().TrimEnd(',');
@@ -109,8 +112,11 @@ namespace SharpDB
                 para.ParameterName = parameterName;
                 para.Value = (objvalue ?? DBNull.Value);
 
+                object newValue;
                 ColumnInfo cInfo = Info[tableName, name];
-                para.DbType = GetValueDbType(cInfo, objvalue, this.AccessType);
+                para.DbType = GetValueDbType(cInfo, objvalue, this.AccessType, out newValue);
+                para.Value = newValue;
+
                 lstParam.Add(para);
             }
             update_sql = sb_beforeSQL.ToString().TrimEnd(',');
@@ -149,8 +155,13 @@ namespace SharpDB
             DbParameter para = CreateParameter();
             para.ParameterName = (ParamCharacter + pkOrUniqueColName);
             para.Value = pkOrUniqueValue;
+           
+
+            object newValue;
             ColumnInfo cInfo = Info[tableName, pkOrUniqueColName];
-            para.DbType = GetValueDbType(cInfo, pkOrUniqueValue, this.AccessType);
+            para.DbType = GetValueDbType(cInfo, pkOrUniqueValue, this.AccessType, out newValue);
+            para.Value = newValue;
+
             lstParam.Add(para);
             if (Exists(exist_sql, lstParam.ToArray()))
             {
@@ -209,9 +220,11 @@ namespace SharpDB
                 para.ParameterName = parameterName;
                 para.Value = (objvalue ?? DBNull.Value);
 
+                object newValue;
                 ColumnInfo cInfo = Info[tableName, name];
-                para.DbType = GetValueDbType(cInfo, objvalue, this.AccessType);
-
+                para.DbType = GetValueDbType(cInfo, objvalue, this.AccessType, out newValue);
+                para.Value = newValue;
+                
                 lstParam.Add(para);
             }
             update_sql = sb_beforeSQL.ToString().TrimEnd(',');
@@ -343,8 +356,11 @@ namespace SharpDB
             DbParameter para = CreateParameter();
             para.ParameterName = (ParamCharacter + pkOrUniqueColName);
             para.Value = Idvalue;
-            para.DbType = GetValueDbType(colInfo, Idvalue, this.AccessType);
 
+            object newValue;
+            para.DbType = GetValueDbType(colInfo, Idvalue, this.AccessType, out newValue);
+            para.Value = newValue;
+            
             return GetSingle<TReturn>(single_sql, 300, para);
         }
 
@@ -405,26 +421,24 @@ namespace SharpDB
         internal Hashtable ConvertHashTable(object obj, List<string> lstAllColName = null, params string[] excludeColNames)
         {
             Hashtable ht = new Hashtable();
+            excludeColNames = excludeColNames ?? new string[] { };
             if (obj is IDictionary || obj is ExpandoObject)
             {
                 IDictionary dict = ((IDictionary)obj);
-                if (excludeColNames != null && excludeColNames.Length > 0)
+                foreach (DictionaryEntry entry in dict)
                 {
-                    foreach (DictionaryEntry entry in dict)
+                    string name = entry.Key.ToString();
+                    if (lstAllColName != null &&
+                        lstAllColName.Contains(name, StringComparer.OrdinalIgnoreCase) &&
+                        !excludeColNames.Contains(name, StringComparer.OrdinalIgnoreCase)
+                        )
                     {
-                        string name = entry.Key.ToString();
-                        if (lstAllColName != null &&
-                            lstAllColName.Contains(name, StringComparer.OrdinalIgnoreCase) &&
-                            !excludeColNames.Contains(name, StringComparer.OrdinalIgnoreCase)
-                            )
-                        {
-                            ht.Add(name, entry.Value);
-                        }
+                        ht.Add(name, entry.Value);
                     }
-                }
-                else
-                {
-                    ht = new Hashtable(dict);
+                    else if (lstAllColName == null && !excludeColNames.Contains(name, StringComparer.OrdinalIgnoreCase))
+                    {
+                        ht.Add(name, entry.Value);
+                    }
                 }
             }
             else if (obj is NameValueCollection)
@@ -437,6 +451,10 @@ namespace SharpDB
                         lstAllColName.Contains(name, StringComparer.OrdinalIgnoreCase) &&
                           !excludeColNames.Contains(name, StringComparer.OrdinalIgnoreCase)
                         )
+                    {
+                        ht.Add(name, nvc[key]);
+                    }
+                    else if (lstAllColName == null && !excludeColNames.Contains(name, StringComparer.OrdinalIgnoreCase))
                     {
                         ht.Add(name, nvc[key]);
                     }
@@ -453,6 +471,10 @@ namespace SharpDB
                         lstAllColName.Contains(name, StringComparer.OrdinalIgnoreCase) &&
                           !excludeColNames.Contains(name, StringComparer.OrdinalIgnoreCase)
                         )
+                    {
+                        ht.Add(name, dr[dc.ColumnName]);
+                    }
+                    else if (lstAllColName == null && !excludeColNames.Contains(name, StringComparer.OrdinalIgnoreCase))
                     {
                         ht.Add(name, dr[dc.ColumnName]);
                     }
@@ -475,6 +497,10 @@ namespace SharpDB
                         objvalue = pInfo.GetValue(obj, null);
                         ht.Add(name, objvalue);
                     }
+                    else if (lstAllColName == null && !excludeColNames.Contains(name, StringComparer.OrdinalIgnoreCase))
+                    {
+                        ht.Add(name, objvalue);
+                    }
                 }
             }
             return ht;
@@ -487,7 +513,7 @@ namespace SharpDB
                 throw new ArgumentNullException("tableName", "不能为空！");
             }
 
-            if (Info.TableNames.Contains(tableName, StringComparer.OrdinalIgnoreCase))
+            if (!Info.TableNames.Contains(tableName, StringComparer.OrdinalIgnoreCase))
             {
                 throw new ArgumentException(string.Format("不存在该表！{0}", "[" + tableName + "]", "tableName"));
             }
@@ -512,11 +538,12 @@ namespace SharpDB
         /// <param name="cInfo"></param>
         /// <param name="value"></param>
         /// <returns></returns>
-        internal DbType GetValueDbType(ColumnInfo cInfo, object value, AccessType dbBaseType)
+        internal DbType GetValueDbType(ColumnInfo cInfo, object value, AccessType dbBaseType,out object newValue)
         {
             DbType dbType = DbType.AnsiString;
-
-            if (value == null)
+            string typeName = cInfo.TypeName.ToLower();
+            newValue = value;
+            if (value == null && !cInfo.IsIdentity)
             {
                 if (!cInfo.CanNull)
                 {
@@ -525,10 +552,28 @@ namespace SharpDB
             }
             else
             {
-                if (cInfo.TypeName.Equals("date", StringComparison.OrdinalIgnoreCase)
-                    || cInfo.TypeName.Equals("datetime", StringComparison.OrdinalIgnoreCase))
+                if (typeName.Contains("char"))
+                {
+                    int len = newValue.ToString().Length;
+                    if (len > cInfo.Length)
+                    {
+                        throw new ArgumentNullException(cInfo.ColumnName, "字符串长度超出限制！(" + len + ">" + cInfo.Length + ")");
+                    }
+                }
+                if (typeName.Contains("date"))
                 {
                     dbType = DbType.DateTime;
+                    newValue = value.ConvertTo<DateTime>();
+                }
+                else if (typeName.Contains("uniqueidentifier"))
+                {
+                    dbType = DbType.Guid;
+                    newValue = value.ConvertTo<Guid>();
+                }
+                else if (typeName.Contains("numeric"))
+                {
+                    dbType = DbType.Double;
+                    newValue = value.ConvertTo<double>();
                 }
                 else if (value is byte[])
                 {
@@ -536,7 +581,7 @@ namespace SharpDB
                 }
                 else if (true)
                 {
-
+                   
                 }
 
             }

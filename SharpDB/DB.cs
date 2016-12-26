@@ -204,8 +204,14 @@ namespace SharpDB
 
         internal DbConnection GetDBConn(DbConnection conn)
         {
-            conn.ConnectionString = ConnectionString;
-            return conn;
+            if (conn != null)
+            {
+                conn.ConnectionString = ConnectionString;
+                return conn;
+            }
+            _DBConn = DBFactory.CreateConnection();
+            _DBConn.ConnectionString = ConnectionString;
+            return _DBConn;
         }
 
 
@@ -426,6 +432,31 @@ namespace SharpDB
                     }
                     catch (Exception ex)
                     {
+                        //string Sql = "select top 1 * from ZDSJ_CT_WDZX";
+                        //DataRow dr = this.QueryRow(Sql);
+                        //Hashtable ht = ConvertHashTable(dr);
+                        //string currColName = string.Empty;
+                        //try
+                        //{
+                        //    foreach (var item in cmdParms)
+                        //    {
+                        //        currColName = item.ParameterName.Replace(ParamCharacter, "").ToLower();
+                              
+                        //        Hashtable htNew = new Hashtable();
+                        //        htNew.Add("ID", ht["id"]);
+                        //        htNew.Add(currColName, item.Value);
+                        //        if (currColName =="id")
+                        //        {
+                        //            continue;
+                        //        }
+                        //        bool res = Update(htNew, "ZDSJ_CT_WDZX");
+                        //    }
+                        //    return 1;
+                        //}
+                        //catch (Exception newEX)
+                        //{
+                        //    throw newEX;
+                        //}
                         throw ex;
                     }
                     finally
@@ -526,6 +557,7 @@ namespace SharpDB
         #region private 
         private void PrepareCommand(DbCommand cmd, DbConnection conn, DbTransaction trans, string cmdText, IDataParameter[] cmdParms, int times = 30, CommandType cmdType = CommandType.Text)
         {
+            conn = GetDBConn(conn);
             if (conn.State != ConnectionState.Open)
                 conn.Open();
             cmd.Connection = conn;

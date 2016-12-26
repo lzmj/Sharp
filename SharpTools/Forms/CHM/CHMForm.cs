@@ -119,10 +119,15 @@ namespace SharpTools
         {
             if (string.IsNullOrWhiteSpace(chm_html_path))
             {
-                Builder();
+                string useDir = Environment.GetFolderPath(Environment.SpecialFolder.DesktopDirectory);
+                chm_html_path = Path.Combine(useDir, txtCHM_Name.Text);
+                if (!Directory.Exists(chm_html_path))
+                {
+                    Builder();
+                }
             }
-            txtCHM_Name.Enabled = false;
-            //CkRetainHtml.Enabled = false;
+
+            txtCHM_Name.Enabled = false;          
             btnMakeCHM.Enabled = false;
             btnMakeCHM.Text = "导出中...";
             try
@@ -132,8 +137,7 @@ namespace SharpTools
                 c3.DefaultPage = defaultHtml;
                 c3.Title = txtCHM_Name.Text;
                 c3.ChmFileName = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Desktop), c3.Title + ".chm");
-                c3.SourcePath = chm_html_path;
-                //string result = c3.Compile(CkRetainHtml.Checked);
+                c3.SourcePath = chm_html_path;               
                 string result = c3.Compile(true);
                 if (string.IsNullOrWhiteSpace(result))
                 {
@@ -145,18 +149,14 @@ namespace SharpTools
                 {
                     MessageBox.Show(result);
                     this.Close();
-                    //if (CkRetainHtml.Checked)//保留html文件
-                    {
-                        Process.Start(indexHtmlpath);
-                    }
+                    Process.Start(indexHtmlpath);
                 }
             }
             catch (Exception ex)
             {
                 MessageBox.Show("导出CHM失败！" + ex.Message);
             }
-            txtCHM_Name.Enabled = true;
-            //CkRetainHtml.Enabled = true;
+            txtCHM_Name.Enabled = true;           
             btnMakeCHM.Enabled = true;
             btnMakeCHM.Text = "导出";
             
@@ -164,7 +164,6 @@ namespace SharpTools
 
         private void CHMForm_Load(object sender, EventArgs e)
         {
-            CkRetainHtml.Visible = false;
             txtCHM_Name.Text = connectionModel.Database.Replace("/",".") + "表结构信息";
             btnMakeCHM.Focus();
         }

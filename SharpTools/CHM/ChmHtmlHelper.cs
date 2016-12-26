@@ -92,7 +92,7 @@ namespace SharpTools.CHM
             {
                 code.AppendLine("            <tr>");
                 code.AppendLine("            <td>{0}</td>".FormatString(j));
-                code.AppendLine("            <td>{0}</td>".FormatString("<a href=\"表结构\\" + tab.Key + " " + tab.Value.Replace("/", "▪").Replace("\\","▪") + ".html\">" + tab.Key + "</a>"));
+                code.AppendLine("            <td>{0}</td>".FormatString("<a href=\"表结构\\" + tab.Key + " " + FilterIllegalDir(tab.Value) + ".html\">" + tab.Key + "</a>"));
                 code.AppendLine("            <td>{0}</td>".FormatString(!string.IsNullOrWhiteSpace(tab.Value) ? tab.Value : "&nbsp;"));
                 code.AppendLine("            </tr>");
                 j++;
@@ -109,12 +109,27 @@ namespace SharpTools.CHM
         }
 
 
+        /// <summary>
+        /// 处理非法字符路径
+        /// </summary>
+        /// <param name="path"></param>
+        /// <returns></returns>
+        public static string FilterIllegalDir(string path)
+        {
+            if (path.IndexOfAny(Path.GetInvalidFileNameChars()) >= 0)
+            {
+                path = string.Join(" ", path.Split(Path.GetInvalidFileNameChars()));
+            }
+            return path;
+        }
+
+
         public static void CreateHtml(IList<TableInfo> lstTabs, string tabsdir)
         {
             
             foreach (var tab in lstTabs)
             {
-                string tabPath = tabsdir + "\\" + tab.TableName + " " + tab.TabComment.Replace("/", "▪").Replace("\\", "▪") + ".html";
+                string tabPath = tabsdir + "\\" + tab.TableName + " " + FilterIllegalDir(tab.TabComment) + ".html";
 
                 var code = new StringBuilder();
                 code.AppendLine("<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Transitional//EN\" \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd\">");
