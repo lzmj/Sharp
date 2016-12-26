@@ -146,18 +146,18 @@ namespace SharpDB
             else if (Db.AccessType == AccessType.MySql)
             {
                 selSql = "select case when ((SELECT count(1) FROM information_schema.tables where table_type='base table' and TABLE_SCHEMA='{0}' )= (SELECT count(1) FROM information_schema.tables where table_type='base table' and TABLE_SCHEMA = '{0}' and ENGINE = 'MyISAM')) then true else FALSE end as res";
-                selSql = string.Format(selSql, Db.DBConn.Database);
+                selSql = string.Format(selSql, Db.Database);
                 isAllMyISAM = Db.GetSingle<bool>(selSql);
                 if (isAllMyISAM)
                 {
-                    selSql = "SELECT TABLE_NAME,UPDATE_TIME FROM information_schema.tables where TABLE_SCHEMA='" + Db.DBConn.Database + "' and table_type='base table' ORDER BY UPDATE_TIME asc;";
+                    selSql = "SELECT TABLE_NAME,UPDATE_TIME FROM information_schema.tables where TABLE_SCHEMA='" + Db.Database + "' and table_type='base table' ORDER BY UPDATE_TIME asc;";
                     dict_SD = Db.QueryTable(selSql).GetDict<string, DateTime>("TABLE_NAME", "UPDATE_TIME");
                     lstTabNames = dict_SD.Keys.ToList();
                 }
                 else
                 {
                     selSql = "SELECT TABLE_NAME FROM information_schema.tables where  table_type='base table' and TABLE_SCHEMA='{0}' order by TABLE_NAME asc ";
-                    selSql = string.Format(selSql, Db.DBConn.Database);
+                    selSql = string.Format(selSql, Db.Database);
                     lstTabNames = Db.QueryTable(selSql).GetFirstCol<string>();
                 }
             }
@@ -334,7 +334,7 @@ namespace SharpDB
             {
                 case AccessType.MySql:
                     //mysql修改字段注释方法:http://blog.sina.com.cn/s/blog_72aace390102uwgg.html
-                    string dbName = Db.DBConn.Database;
+                    string dbName = Db.Database;
                     string selsql = "use information_schema;select column_Type from COLUMNS where table_name = '" + tableName + "' and column_name = '" + columnName + "';";
                     string col_type = Db.GetSingle<string>(selsql, 300);
                     upsert_sql = "use " + dbName + ";ALTER TABLE " + tableName + " MODIFY COLUMN " + columnName + " " + col_type + " COMMENT '" + comment + "';";
@@ -370,7 +370,7 @@ namespace SharpDB
             switch (Db.AccessType)
             {
                 case AccessType.MySql:
-                    strSql = "SELECT COLUMN_COMMENT FROM INFORMATION_SCHEMA.COLUMNS WHERE table_name = '" + tableName + "' AND table_schema = '" + Db.DBConn.Database + "' AND column_name LIKE '" + columnName + "'";
+                    strSql = "SELECT COLUMN_COMMENT FROM INFORMATION_SCHEMA.COLUMNS WHERE table_name = '" + tableName + "' AND table_schema = '" + Db.Database + "' AND column_name LIKE '" + columnName + "'";
                     break;
                 case AccessType.MsSql:
                     strSql = @"SELECT top 1 value FROM ::fn_listextendedproperty (NULL, 'user', 'dbo', 'table', '" + tableName + "', 'column', default) where objname = '" + columnName + "'";
@@ -402,7 +402,7 @@ namespace SharpDB
             switch (Db.AccessType)
             {
                 case AccessType.MySql:
-                    strSql = "SELECT column_name,COLUMN_COMMENT as comments FROM INFORMATION_SCHEMA.COLUMNS WHERE AND table_schema = '" + Db.DBConn.Database + "' and table_name = '" + tableName + "'";
+                    strSql = "SELECT column_name,COLUMN_COMMENT as comments FROM INFORMATION_SCHEMA.COLUMNS WHERE AND table_schema = '" + Db.Database + "' and table_name = '" + tableName + "'";
                     break;
                 case AccessType.MsSql:
                     strSql = @"SELECT objname AS column_name,value AS comments FROM ::fn_listextendedproperty (NULL, 'user', 'dbo', 'table', '" + tableName + "', 'column', default) ";
@@ -430,7 +430,7 @@ namespace SharpDB
             switch (Db.AccessType)
             {
                 case AccessType.MySql:
-                    strSql = "SELECT table_name name,TABLE_COMMENT value FROM INFORMATION_SCHEMA.TABLES  WHERE table_type='base table' and  table_schema = '" + Db.DBConn.Database + "' order by table_name asc ";
+                    strSql = "SELECT table_name name,TABLE_COMMENT value FROM INFORMATION_SCHEMA.TABLES  WHERE table_type='base table' and  table_schema = '" + Db.Database + "' order by table_name asc ";
                     break;
                 case AccessType.MsSql:
                     strSql = @"SELECT a.NAME,(SELECT TOP 1 value FROM sys.extended_properties b WHERE b.major_id=a.id and b.minor_id=0) AS value FROM sysobjects a
@@ -478,7 +478,7 @@ WHERE a.xtype='U' AND a.name <>'sysdiagrams' AND a.name <>'dtproperties' ORDER B
             switch (Db.AccessType)
             {
                 case AccessType.MySql:
-                    strSql = "SELECT TABLE_COMMENT value FROM INFORMATION_SCHEMA.TABLES  WHERE table_type='BASE TABLE' and table_schema = '" + Db.DBConn.Database + "' and table_name='" + tableName + "'";
+                    strSql = "SELECT TABLE_COMMENT value FROM INFORMATION_SCHEMA.TABLES  WHERE table_type='BASE TABLE' and table_schema = '" + Db.Database + "' and table_name='" + tableName + "'";
                     break;
                 case AccessType.MsSql:
                     strSql = @"SELECT (SELECT TOP 1 value FROM sys.extended_properties b WHERE b.major_id=a.id and b.minor_id=0) AS value FROM sysobjects a
@@ -691,7 +691,7 @@ Where b.COLUMN_NAME= a.COLUMN_NAME   and a.Table_Name='{0}'  order by a.column_I
         private List<ColumnInfo> SqliteColInfo(string tableName)
         {
             List<ColumnInfo> lstCols = new List<ColumnInfo>();
-            var dbConn = Db.GetDBConn(Db.DBConn);
+            var dbConn = Db.CreateConn();
             dbConn.Open();
             DataRow[] columns = dbConn.GetSchema("COLUMNS").Select("TABLE_NAME='" + tableName + "'");
             foreach (DataRow dr in columns)

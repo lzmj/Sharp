@@ -190,50 +190,68 @@ namespace SharpDB
 
         #region Ado.Net 对象
 
-        private static object locker = new object();
-        private DbConnection _DBConn = null;
-        internal DbConnection DBConn
+        private string _Database = string.Empty;
+        public string Database
         {
-            get
-            {
-                _DBConn = DBFactory.CreateConnection();
-                _DBConn.ConnectionString = ConnectionString;
-                return _DBConn;
-            }
+            get { return _Database; }
+        }
+        internal DbConnection CreateConn()
+        {
+            return CreateConn(null);
         }
 
-        internal DbConnection GetDBConn(DbConnection conn)
+        internal DbConnection CreateConn(string connectionString)
         {
-            if (conn != null)
+            DbConnection _DBConn = DBFactory.CreateConnection();
+            if (!string.IsNullOrWhiteSpace(connectionString))
             {
-                conn.ConnectionString = ConnectionString;
-                return conn;
+                _DBConn.ConnectionString = connectionString;
             }
-            _DBConn = DBFactory.CreateConnection();
-            _DBConn.ConnectionString = ConnectionString;
+            else
+            {
+                _DBConn.ConnectionString = this.ConnectionString;
+            }
+            _Database = _DBConn.Database;
             return _DBConn;
         }
 
-
-        private DbCommand _DBCmd = null;
-        private DbCommand DBCmd
+        private DbCommand CreateCmd()
         {
-            get
+            DbCommand _DBCmd = DBFactory.CreateCommand();
+            return _DBCmd;
+        }
+
+        private DbCommand CreateCmd(string commandText = null, DbConnection DbConn = null)
+        {
+            DbCommand _DBCmd = DBFactory.CreateCommand();
+            if (DbConn != null)
             {
-                if (_DBCmd == null)
-                {
-                    _DBCmd = DBFactory.CreateCommand();
-                    _DBCmd.Connection = DBConn;
-                }
-                return _DBCmd;
+                _DBCmd.Connection = DbConn;
             }
+            if (!string.IsNullOrWhiteSpace(commandText))
+            {
+                _DBCmd.CommandText = commandText;
+            }           
+            return _DBCmd;
         }
 
 
-        private DbDataAdapter GetDataAdapter(DbCommand dbCmd)
+        private DbDataAdapter CreateAdapter(DbCommand dbCmd = null)
         {
             DbDataAdapter dbadapter = DBFactory.CreateDataAdapter();
-            dbadapter.SelectCommand = dbCmd;
+            if (dbCmd != null)
+            {
+                dbadapter.SelectCommand = dbCmd;
+            }
+            return dbadapter;
+        }
+        private DbDataAdapter CreateAdapter(string commandText, DbConnection DbConn = null)
+        {
+            DbDataAdapter dbadapter = DBFactory.CreateDataAdapter();
+            if (!string.IsNullOrWhiteSpace(commandText))
+            {
+                dbadapter.SelectCommand = CreateCmd(commandText, DbConn);
+            }
             return dbadapter;
         }
 
@@ -250,9 +268,9 @@ namespace SharpDB
         {
             bool bResult = false;
             msg = string.Empty;
-            using (DbConnection conn = DBConn)
+            using (DbConnection conn = CreateConn())
             {
-                DbCommand cmd = DBCmd;
+                DbCommand cmd = CreateCmd();
                 cmd.Connection = conn;
                 conn.Open();
                 try
@@ -319,9 +337,9 @@ namespace SharpDB
         #region 单值、DataRow、DataTable、List<DataTable>、DbDataReader 返回
         public TReturn GetSingle<TReturn>(string strSql, int times, params System.Data.IDataParameter[] cmdParms)
         {
-            using (DbConnection connection = DBConn)
+            using (DbConnection connection = CreateConn())
             {
-                using (DbCommand cmd = DBCmd)
+                using (DbCommand cmd = CreateCmd())
                 {
                     try
                     {
@@ -362,11 +380,11 @@ namespace SharpDB
 
         public List<DataTable> QueryDS(string strSql, int times = 30, params System.Data.IDataParameter[] cmdParms)
         {
-            using (DbConnection connection = DBConn)
+            using (DbConnection connection = CreateConn())
             {
                 DbCommand cmd = connection.CreateCommand();
                 PrepareCommand(cmd, connection, null, strSql, cmdParms, times);
-                using (DbDataAdapter da = GetDataAdapter(cmd))
+                using (DbDataAdapter da = CreateAdapter(cmd))
                 {
                     List<DataTable> lstTab = new List<DataTable>();
                     DataSet ds = new DataSet();
@@ -401,8 +419,8 @@ namespace SharpDB
 
         public DbDataReader ExecuteReader(string strSql, int times = 30, params System.Data.IDataParameter[] cmdParms)
         {
-            DbConnection connection = DBConn;
-            DbCommand cmd = DBCmd;
+            DbConnection connection = CreateConn();
+            DbCommand cmd = CreateCmd();
             try
             {
                 PrepareCommand(cmd, connection, null, strSql, cmdParms, times);
@@ -419,9 +437,9 @@ namespace SharpDB
         #region 插入、更新、删除 执行命令/执行存储过程
         public int ExecuteSql(string strSql, int times = 30, params System.Data.IDataParameter[] cmdParms)
         {
-            using (DbConnection connection = DBConn)
+            using (DbConnection connection = CreateConn())
             {
-                using (DbCommand cmd = DBCmd)
+                using (DbCommand cmd = CreateCmd())
                 {
                     try
                     {
@@ -432,31 +450,17 @@ namespace SharpDB
                     }
                     catch (Exception ex)
                     {
-                        //string Sql = "select top 1 * from ZDSJ_CT_WDZX";
-                        //DataRow dr = this.QueryRow(Sql);
-                        //Hashtable ht = ConvertHashTable(dr);
-                        //string currColName = string.Empty;
-                        //try
+                        //string currColName = string.Empty;                        
+                        //string update_sql = string.Empty;
+                        //foreach (var item in cmdParms)
                         //{
-                        //    foreach (var item in cmdParms)
-                        //    {
-                        //        currColName = item.ParameterName.Replace(ParamCharacter, "").ToLower();
-                              
-                        //        Hashtable htNew = new Hashtable();
-                        //        htNew.Add("ID", ht["id"]);
-                        //        htNew.Add(currColName, item.Value);
-                        //        if (currColName =="id")
-                        //        {
-                        //            continue;
-                        //        }
-                        //        bool res = Update(htNew, "ZDSJ_CT_WDZX");
-                        //    }
-                        //    return 1;
+                        //    object val = string.Empty;
+                           
+                        //    val = "'" + item.Value + "'";
+                        //    update_sql = "update ZDSJ_CT_WDZX set " + item.ParameterName.Replace("@", "") + "=" + val + " where id = 1";
+                        //    ExecuteSqlTran(update_sql);
                         //}
-                        //catch (Exception newEX)
-                        //{
-                        //    throw newEX;
-                        //}
+                        //return 1;
                         throw ex;
                     }
                     finally
@@ -468,12 +472,51 @@ namespace SharpDB
             }
         }
 
-        public int ExecuteSqlTran(List<string> SqlCmdList)
+
+
+
+        public int ExecuteSqlTran(params string[] SqlCmd)
         {
-            using (DbConnection conn = DBConn)
+            if (SqlCmd == null || SqlCmd.Length ==0)
+            {
+                return -1;
+            }
+            using (DbConnection conn = CreateConn())
             {
                 conn.Open();
-                DbCommand cmd = DBCmd;
+                DbCommand cmd = CreateCmd();
+                cmd.Connection = conn;
+                DbTransaction tran = conn.BeginTransaction();
+                cmd.Transaction = tran;
+                try
+                {
+                    int count = 0;
+                    for (int n = 0; n < SqlCmd.Length; n++)
+                    {
+                        string strsql = SqlCmd[n];
+                        if (strsql.Trim().Length > 1)
+                        {
+                            cmd.CommandText = strsql;
+                            count += cmd.ExecuteNonQuery();
+                        }
+                    }
+                    tran.Commit();
+                    return count;
+                }
+                catch(Exception ex)
+                {
+                    tran.Rollback();
+                    return -1;
+                }
+            }
+        }
+
+        public int ExecuteSqlTran(List<string> SqlCmdList)
+        {
+            using (DbConnection conn = CreateConn())
+            {
+                conn.Open();
+                DbCommand cmd = CreateCmd();
                 cmd.Connection = conn;
                 DbTransaction tran = conn.BeginTransaction();
                 cmd.Transaction = tran;
@@ -502,12 +545,12 @@ namespace SharpDB
 
         public int ExecuteSqlTran(Hashtable SqlCmdList)
         {
-            using (DbConnection conn = DBConn)
+            using (DbConnection conn = CreateConn())
             {
                 conn.Open();
                 using (DbTransaction trans = conn.BeginTransaction())
                 {
-                    DbCommand cmd = DBCmd;
+                    DbCommand cmd = CreateCmd();
                     try
                     {
                         int count = 0;
@@ -541,12 +584,12 @@ namespace SharpDB
         public DataSet RunProcedure(string storedProcName, int times = 30, params IDataParameter[] parameters)
         {
             DataSet ds = new DataSet("ds");
-            using (DbConnection conn = DBConn)
+            using (DbConnection conn = CreateConn())
             {
                 conn.Open();
-                DbCommand cmd = DBCmd;
+                DbCommand cmd = CreateCmd();
                 PrepareCommand(cmd, conn, null, storedProcName, parameters, times, CommandType.StoredProcedure);
-                DataAdapter adapter = GetDataAdapter(cmd);
+                DataAdapter adapter = CreateAdapter(cmd);
                 adapter.Fill(ds);
             }
             return ds;
@@ -557,7 +600,6 @@ namespace SharpDB
         #region private 
         private void PrepareCommand(DbCommand cmd, DbConnection conn, DbTransaction trans, string cmdText, IDataParameter[] cmdParms, int times = 30, CommandType cmdType = CommandType.Text)
         {
-            conn = GetDBConn(conn);
             if (conn.State != ConnectionState.Open)
                 conn.Open();
             cmd.Connection = conn;

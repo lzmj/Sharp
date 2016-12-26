@@ -327,6 +327,20 @@ namespace SharpDB
             }
             return objs;
         }
+        
+        public static int DataLength(this string stringWithEnglishAndChinese)
+        {
+            int lng = 0;
+            for (int i = 0; i < stringWithEnglishAndChinese.Length; i++)
+            {
+                byte[] b = System.Text.Encoding.Default.GetBytes(stringWithEnglishAndChinese.Substring(i, 1));
+                if (b.Length > 1)
+                    lng += 2;
+                else
+                    lng += 1;
+            }
+            return lng;
+        }
 
     }
 }

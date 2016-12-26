@@ -552,12 +552,24 @@ namespace SharpDB
             }
             else
             {
+                //if (cInfo.ColumnName == "BKTXT" && newValue.ToString()== "涿州市利顺来保温材料厂010101010101011")
+                //{
+
+                //}
                 if (typeName.Contains("char"))
                 {
-                    int len = newValue.ToString().Length;
+                    int len = 0;
+                    if (typeName.Equals("varchar"))
+                    {
+                        len = newValue.ToString().DataLength();
+                    }
+                    else if (typeName.Equals("nvarchar"))
+                    {
+                        len = newValue.ToString().Length * 2;
+                    }
                     if (len > cInfo.Length)
                     {
-                        throw new ArgumentNullException(cInfo.ColumnName, "字符串长度超出限制！(" + len + ">" + cInfo.Length + ")");
+                        throw new ArgumentNullException(cInfo.ColumnName, cInfo.ColumnName + "字符串长度超出限制！(" + len + ">" + cInfo.Length + ")");
                     }
                 }
                 if (typeName.Contains("date"))

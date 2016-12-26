@@ -12,6 +12,7 @@ using System.Collections.Concurrent;
 using System.IO;
 using SharpDB;
 using SharpDB.Entity;
+using System.Data.SqlClient;
 
 namespace SharpDB_ConsoleApp
 {
@@ -21,6 +22,8 @@ namespace SharpDB_ConsoleApp
         static string connStr = @"data source=10.1.19.189\MSSQLSERVER1;uid=aiws;pwd=aiws;database=AIWS;Pooling=true;";
         static void Main(string[] args)
         {
+
+            SqlDataAdapter adapter = new SqlDataAdapter();
 
             //connStr = @"data source=10.5.98.136\SJYJDB1,62427;uid=aiws;pwd=aiws;database=AIWS_V2";
             //ExecDesc();
@@ -490,46 +493,16 @@ namespace SharpDB_ConsoleApp
                 #region MyRegion
                 List<string> lst = new List<string>
                 {
-                    "北京市龙乡煤矸石页岩砖有限公司",
-"北京东海防腐防水工程技术有限责任公司",
-"北京市霍尼防水科技集团",
-"北京市平谷县光明水泥构件厂",
-"北京益丰盛达建筑材料有限公司",
-"涿州市利顺来保温材料厂",
-"北京安广美生防水材料技术开发有限公司",
+"12345123451234512345123451",
 "北京立鑫伟业建材厂",
-"北京鑫鑫源建筑器材租赁有限公司",
 "北京圆三角玛钢厂",
 "三河市宏达钢管厂",
-"北京新世纪金盾建筑防水工程有限责任公司",
-"中国水利电力部第三工程局西南工程公司",
-"北京哈威工程材料有限责任公司",
-"北京市清欣涂料有限责任公司",
-"北京佳达塑化制品有限公司",
-"北京芦城泰特涂料厂",
-"北京亚日通科技发展有限公司",
-"北京市平谷区霞东陶粒砖厂",
-"北京冶建新技术公司",
-"北京优乐家涂料有限公司",
-"北京中建宏业科技发展有限公司",
-"北京东煜工贸有限责任公司",
-"北京市佳意水泥制品厂",
-"北京韩宝水泥制品有限责任公司",
-"北京市彤龙鼎科技发展有限公司",
-"北京市彤龙鼎科技发展有限公司",
-"北京太伟金属结构工程有限责任公司",
 "北京市丁各庄砖厂",
 "北京南火垡砖厂",
 "北京丰阳页岩砖厂",
-"北京中水科海利工程技术有限公司",
 "龙湖置业有限公司",
-"北京文昌塑料制品有限公司",
-"北京市华永通建筑构件有限公司",
-"北京固之特防水材料有限公司",
 "北京恒勤开源科技有限公司",
 "北京市卡利特精细化工公司",
-"北京建筑材料科学研究总院有限公司",
-
                 };
                 #endregion
                 return rdom.NextRdomItem(lst.ToArray());
