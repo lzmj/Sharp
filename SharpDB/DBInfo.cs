@@ -612,9 +612,9 @@ Where b.COLUMN_NAME= a.COLUMN_NAME   and a.Table_Name='{0}'  order by a.column_I
                         TypeNameProcess(typename, out typename, out len, out pre, out scal);
 
                         colInfo.TypeName = typename;
-                        colInfo.Length = len.ConvertTo<int?>(null);
+                        colInfo.Length = len.ConvertTo<int?>((int?)null);
                         //colInfo.Preci = pre.ConvertTo<int?>(null);
-                        colInfo.Scale = scal.ConvertTo<int?>(null);
+                        colInfo.Scale = scal.ConvertTo<int?>((int?)null);
                     }
 
                     if ((!Object.Equals(reader["Key"], null)) && (!Object.Equals(reader["Key"], System.DBNull.Value)))
@@ -699,9 +699,9 @@ Where b.COLUMN_NAME= a.COLUMN_NAME   and a.Table_Name='{0}'  order by a.column_I
                 ColumnInfo colInfo = new ColumnInfo();
                 colInfo.Colorder = dr["ORDINAL_POSITION"].ToString().ConvertTo<int>(0);
                 colInfo.ColumnName = dr["COLUMN_NAME"].ToString();
-                colInfo.Length = dr["CHARACTER_MAXIMUM_LENGTH"].ToString().ConvertTo<int?>(null);
+                colInfo.Length = dr["CHARACTER_MAXIMUM_LENGTH"].ToString().ConvertTo<int?>((int?)null);
                 //colInfo.Preci = dr["NUMERIC_PRECISION"].ToString().ConvertTo<int?>(null);
-                colInfo.Scale = dr["NUMERIC_SCALE"].ToString().ConvertTo<int?>(null);
+                colInfo.Scale = dr["NUMERIC_SCALE"].ToString().ConvertTo<int?>((int?)null);
                 colInfo.IsPK = dr["PRIMARY_KEY"].ToString().ToLower() == "true" ? true : false;
                 colInfo.CanNull = dr["IS_NULLABLE"].ToString().ToLower() == "true" ? true : false;
                 colInfo.DefaultVal = dr["COLUMN_DEFAULT"].ToString();

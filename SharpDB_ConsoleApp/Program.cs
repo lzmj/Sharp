@@ -23,6 +23,9 @@ namespace SharpDB_ConsoleApp
         static void Main(string[] args)
         {
 
+           
+
+
             SqlDataAdapter adapter = new SqlDataAdapter();
 
             //connStr = @"data source=10.5.98.136\SJYJDB1,62427;uid=aiws;pwd=aiws;database=AIWS_V2";

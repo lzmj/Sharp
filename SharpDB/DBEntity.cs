@@ -62,10 +62,13 @@ namespace SharpDB
                 para.ParameterName = parameterName;
                 para.Value = (objvalue ?? DBNull.Value);
 
-                object newValue;
-                ColumnInfo cInfo = Info[tableName, name];
-                para.DbType = GetValueDbType(cInfo, objvalue, this.AccessType, out newValue);
-                para.Value = newValue;
+                if (objvalue != DBNull.Value)
+                {
+                    object newValue;
+                    ColumnInfo cInfo = Info[tableName, name];
+                    para.DbType = GetValueDbType(cInfo, objvalue, this.AccessType, out newValue);
+                    para.Value = newValue;
+                }
 
                 lstParam.Add(para);
             }
@@ -112,10 +115,14 @@ namespace SharpDB
                 para.ParameterName = parameterName;
                 para.Value = (objvalue ?? DBNull.Value);
 
-                object newValue;
-                ColumnInfo cInfo = Info[tableName, name];
-                para.DbType = GetValueDbType(cInfo, objvalue, this.AccessType, out newValue);
-                para.Value = newValue;
+                if (objvalue != DBNull.Value)
+                {
+                    object newValue;
+                    ColumnInfo cInfo = Info[tableName, name];
+                    para.DbType = GetValueDbType(cInfo, objvalue, this.AccessType, out newValue);
+                    para.Value = newValue;
+                }
+               
 
                 lstParam.Add(para);
             }
@@ -155,7 +162,6 @@ namespace SharpDB
             DbParameter para = CreateParameter();
             para.ParameterName = (ParamCharacter + pkOrUniqueColName);
             para.Value = pkOrUniqueValue;
-           
 
             object newValue;
             ColumnInfo cInfo = Info[tableName, pkOrUniqueColName];
@@ -220,10 +226,13 @@ namespace SharpDB
                 para.ParameterName = parameterName;
                 para.Value = (objvalue ?? DBNull.Value);
 
-                object newValue;
-                ColumnInfo cInfo = Info[tableName, name];
-                para.DbType = GetValueDbType(cInfo, objvalue, this.AccessType, out newValue);
-                para.Value = newValue;
+                if(objvalue != DBNull.Value)
+                {
+                    object newValue;
+                    ColumnInfo cInfo = Info[tableName, name];
+                    para.DbType = GetValueDbType(cInfo, objvalue, this.AccessType, out newValue);
+                    para.Value = newValue;
+                }
                 
                 lstParam.Add(para);
             }
@@ -567,7 +576,7 @@ namespace SharpDB
                     {
                         len = newValue.ToString().Length * 2;
                     }
-                    if (len > cInfo.Length)
+                    if (cInfo.Length !=-1 && len > cInfo.Length)
                     {
                         throw new ArgumentNullException(cInfo.ColumnName, cInfo.ColumnName + "字符串长度超出限制！(" + len + ">" + cInfo.Length + ")");
                     }
@@ -575,17 +584,17 @@ namespace SharpDB
                 if (typeName.Contains("date"))
                 {
                     dbType = DbType.DateTime;
-                    newValue = value.ConvertTo<DateTime>();
+                    newValue = value.ConvertTo<DateTime>(cInfo.ColumnName);
                 }
                 else if (typeName.Contains("uniqueidentifier"))
                 {
                     dbType = DbType.Guid;
-                    newValue = value.ConvertTo<Guid>();
+                    newValue = value.ConvertTo<Guid>(cInfo.ColumnName);
                 }
                 else if (typeName.Contains("numeric"))
                 {
                     dbType = DbType.Double;
-                    newValue = value.ConvertTo<double>();
+                    newValue = value.ConvertTo<double>(cInfo.ColumnName);
                 }
                 else if (value is byte[])
                 {

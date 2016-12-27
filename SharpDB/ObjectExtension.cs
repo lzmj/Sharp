@@ -20,28 +20,35 @@ namespace SharpDB
         /// <typeparam name="TResult">返回类型</typeparam>
         /// <param name="obj">对象</param>
         /// <returns></returns>
-        public static TResult ConvertTo<TResult>(this object obj)
+        public static TResult ConvertTo<TResult>(this object obj,string markName = "")
         {
-            Type type = typeof(TResult);
-            type = Nullable.GetUnderlyingType(type) ?? type;
-            if (type != null)
+            try
             {
-                object result = null;
-                if (type.IsEnum)
+                Type type = typeof(TResult);
+                type = Nullable.GetUnderlyingType(type) ?? type;
+                if (type != null)
                 {
-                    result = Enum.Parse(type, obj.ToString(), true);
-                }
-                else if (type.IsAssignableFrom(typeof(Guid)))
-                {
-                    result = Guid.Parse(obj.ToString());
-                }
+                    object result = null;
+                    if (type.IsEnum)
+                    {
+                        result = Enum.Parse(type, obj.ToString(), true);
+                    }
+                    else if (type.IsAssignableFrom(typeof(Guid)))
+                    {
+                        result = Guid.Parse(obj.ToString());
+                    }
 
-                if (result != null)
-                {
-                    return (TResult)result;
+                    if (result != null)
+                    {
+                        return (TResult)result;
+                    }
                 }
+                return (TResult)Convert.ChangeType(obj, type);
             }
-            return (TResult)Convert.ChangeType(obj, type);
+            catch (Exception ex)
+            {
+                throw new ArgumentException(markName + " " + ex.Message, markName, ex);
+            }
         }
 
         /// <summary>
