@@ -166,10 +166,10 @@
     <Compile Include="Forms\DockContentForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Forms\InsertForm.cs">
+    <Compile Include="Forms\InsertTestData\InsertForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Forms\InsertForm.Designer.cs">
+    <Compile Include="Forms\InsertTestData\InsertForm.Designer.cs">
       <DependentUpon>InsertForm.cs</DependentUpon>
     </Compile>
     <Compile Include="Forms\LeftPanel.cs">
@@ -232,7 +232,7 @@
     <EmbeddedResource Include="Forms\CHM\ImportPDMForm.resx">
       <DependentUpon>ImportPDMForm.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Forms\InsertForm.resx">
+    <EmbeddedResource Include="Forms\InsertTestData\InsertForm.resx">
       <DependentUpon>InsertForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\LeftPanel.resx">
@@ -333,6 +333,7 @@
     <Content Include="Ico\64.ico" />
     <Content Include="img\Add.png" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

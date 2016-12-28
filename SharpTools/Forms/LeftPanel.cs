@@ -360,7 +360,22 @@ namespace SharpTools
 
         private void 插入测试数据ToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            
+            //TreeNode node = tview.SelectedNode;
+            //Entity.Connection conModel = list.Find(delegate (Entity.Connection con) { return con.ID.ToString().Equals(node.Parent.Tag.ToString()); });
+
+            //InsertForm insertForm = new InsertForm();
+            //insertForm.DatabaseName = node.Text;
+            //insertForm.ConnectionModel = conModel;
+            //insertForm.ShowDialog();
+
+
+            if (null != newcontentForm)
+            {
+                Entity.Connection conModel = list.Find(delegate (Entity.Connection con) { return con.ID.ToString().Equals(tview.SelectedNode.Parent.Parent.Parent.Tag.ToString()); });
+                conModel.ConnectionString = tview.SelectedNode.Parent.Parent.Tag.ToString();
+                InsertForm contentFm = new InsertForm();
+                newcontentForm(contentFm, conModel, tview.SelectedNode.Text, tview.SelectedNode.Tag.ToString().Equals("V"));
+            }
         }
 
         private void 表别名设置ToolStripMenuItem_Click(object sender, EventArgs e)

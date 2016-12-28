@@ -22,11 +22,7 @@ namespace SharpDB_ConsoleApp
         static string connStr = @"data source=10.1.19.189\MSSQLSERVER1;uid=aiws;pwd=aiws;database=AIWS;Pooling=true;";
         static void Main(string[] args)
         {
-
-           
-
-
-            SqlDataAdapter adapter = new SqlDataAdapter();
+            
 
             //connStr = @"data source=10.5.98.136\SJYJDB1,62427;uid=aiws;pwd=aiws;database=AIWS_V2";
             //ExecDesc();
@@ -34,27 +30,27 @@ namespace SharpDB_ConsoleApp
             //Console.ReadKey();
 
 
-            DB db = new DB(AccessType.MsSql, connStr);
+            //DB db = new DB(AccessType.MsSql, connStr);
 
-            DBInfo dbInfo = db.Info;
+            //DBInfo dbInfo = db.Info;
 
-            string table_Name = "ZDSJ_CT_WDZX";
+            //string table_Name = "ZDSJ_CT_WDZX";
 
-            List<ColumnInfo> lstColInfo = dbInfo.GetAllColumnInfo(table_Name);
+            //List<ColumnInfo> lstColInfo = dbInfo.GetAllColumnInfo(table_Name);
 
-            while (true)
-            {
-                Dictionary<string, object> dict = new Dictionary<string, object>();
-                foreach (ColumnInfo colInfo in lstColInfo)
-                {
-                    if (colInfo.IsIdentity)
-                    {
-                        continue;
-                    }
-                    dict.Add(colInfo.ColumnName, Rdom(colInfo));
-                }
-                bool res = db.Insert(dict, table_Name);
-            }
+            //while (true)
+            //{
+            //    Dictionary<string, object> dict = new Dictionary<string, object>();
+            //    foreach (ColumnInfo colInfo in lstColInfo)
+            //    {
+            //        if (colInfo.IsIdentity)
+            //        {
+            //            continue;
+            //        }
+            //        dict.Add(colInfo.ColumnName, Rdom(colInfo));
+            //    }
+            //    bool res = db.Insert(dict, table_Name);
+            //}
 
         }
 
