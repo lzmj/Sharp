@@ -89,6 +89,18 @@
     <Compile Include="Forms\CHM\ImportPDMForm.Designer.cs">
       <DependentUpon>ImportPDMForm.cs</DependentUpon>
     </Compile>
+    <Compile Include="Forms\InsertTestData\InsertSetForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\InsertTestData\InsertSetForm.Designer.cs">
+      <DependentUpon>InsertSetForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\InsertTestData\InsetShowForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\InsertTestData\InsetShowForm.Designer.cs">
+      <DependentUpon>InsetShowForm.cs</DependentUpon>
+    </Compile>
     <Compile Include="Forms\TableColumnDisplayForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -234,6 +246,12 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\InsertTestData\InsertForm.resx">
       <DependentUpon>InsertForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\InsertTestData\InsertSetForm.resx">
+      <DependentUpon>InsertSetForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\InsertTestData\InsetShowForm.resx">
+      <DependentUpon>InsetShowForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\LeftPanel.resx">
       <DependentUpon>LeftPanel.cs</DependentUpon>

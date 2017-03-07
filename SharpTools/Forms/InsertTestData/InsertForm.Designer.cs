@@ -31,6 +31,8 @@
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(InsertForm));
             this.gpBoxColNames = new System.Windows.Forms.GroupBox();
             this.CKlst = new System.Windows.Forms.CheckedListBox();
+            this.gpBoxSet = new System.Windows.Forms.GroupBox();
+            this.gpBoxDS = new System.Windows.Forms.GroupBox();
             this.gpBoxColNames.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -58,11 +60,31 @@
             this.CKlst.TabIndex = 0;
             this.CKlst.SelectedIndexChanged += new System.EventHandler(this.CKlst_SelectedIndexChanged);
             // 
+            // gpBoxSet
+            // 
+            this.gpBoxSet.Location = new System.Drawing.Point(365, 28);
+            this.gpBoxSet.Name = "gpBoxSet";
+            this.gpBoxSet.Size = new System.Drawing.Size(243, 629);
+            this.gpBoxSet.TabIndex = 2;
+            this.gpBoxSet.TabStop = false;
+            this.gpBoxSet.Text = "设置";
+            // 
+            // gpBoxDS
+            // 
+            this.gpBoxDS.Location = new System.Drawing.Point(649, 28);
+            this.gpBoxDS.Name = "gpBoxDS";
+            this.gpBoxDS.Size = new System.Drawing.Size(337, 629);
+            this.gpBoxDS.TabIndex = 3;
+            this.gpBoxDS.TabStop = false;
+            this.gpBoxDS.Text = "数据来源";
+            // 
             // InsertForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 15F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1028, 707);
+            this.Controls.Add(this.gpBoxDS);
+            this.Controls.Add(this.gpBoxSet);
             this.Controls.Add(this.gpBoxColNames);
             this.DockAreas = WeifenLuo.WinFormsUI.Docking.DockAreas.Document;
             this.Font = new System.Drawing.Font("宋体", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
@@ -81,5 +103,7 @@
 
         private System.Windows.Forms.GroupBox gpBoxColNames;
         private System.Windows.Forms.CheckedListBox CKlst;
+        private System.Windows.Forms.GroupBox gpBoxSet;
+        private System.Windows.Forms.GroupBox gpBoxDS;
     }
 }

@@ -22,8 +22,6 @@ namespace SharpDB_ConsoleApp
         static string connStr = @"data source=10.1.19.189\MSSQLSERVER1;uid=aiws;pwd=aiws;database=AIWS;Pooling=true;";
         static void Main(string[] args)
         {
-            
-
             //connStr = @"data source=10.5.98.136\SJYJDB1,62427;uid=aiws;pwd=aiws;database=AIWS_V2";
             //ExecDesc();
             //Console.WriteLine("执行完成！");

@@ -366,7 +366,7 @@ namespace SharpDB
         public DataRow QueryRow(string strSql, int times = 30, params System.Data.IDataParameter[] cmdParms)
         {
             DataTable data = QueryDS(strSql, times, cmdParms).FirstOrDefault();
-            if (data != null)
+            if (data != null && data.Rows.Count > 0)
             {
                 return data.Rows[0];
             }
