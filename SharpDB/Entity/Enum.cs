@@ -32,4 +32,10 @@ namespace SharpDB
         /// </summary>
         Sqlite
     }
+
+    public enum WrireType
+    {
+        DataReader,
+        DataTable
+    }
 }

@@ -32,11 +32,6 @@ namespace SharpDB.SPI
         List<T> GetList<T>(string whereStr, string orderByStr = "");
 
         List<T> GetAll<T>(string orderByStr = "");
-
-
-        //void WriteToServer(string connectionString, params DataTable[] datas);
-
-
-
+        
     }
 }

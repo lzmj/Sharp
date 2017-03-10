@@ -10,6 +10,7 @@ using SharpDB.SPI;
 using SharpDB;
 using System.Collections.Concurrent;
 using System.Text.RegularExpressions;
+using System.Data.SqlClient;
 
 namespace SharpDB
 {
@@ -646,6 +647,55 @@ namespace SharpDB
         public int ExecuteSql(string strSql, params IDataParameter[] cmdParms)
         {
             return ExecuteSql(strSql, 30, cmdParms);
+        }
+
+        public bool BulkCopy(string query_Sql, string connString, string tableName, WrireType writeType = WrireType.DataTable, Dictionary<string, string> columnMappings = null)
+        {
+            DataTable data = null;
+            DbDataReader reader = null;
+            
+            if (this.AccessType == AccessType.MsSql)
+            {
+                SqlBulkCopy bulk = null;
+                try
+                {
+                    bulk = new SqlBulkCopy(connString);
+                    using (bulk)
+                    {
+                        bulk.DestinationTableName = tableName;
+                        bulk.BulkCopyTimeout = 300;
+
+                        if (columnMappings != null)
+                        {
+                            foreach (var colMapping in columnMappings)
+                            {
+                                bulk.ColumnMappings.Add(new SqlBulkCopyColumnMapping(colMapping.Key, colMapping.Value));
+                            }
+                        }
+
+                        if (writeType == WrireType.DataTable)
+                        {
+                            data = QueryTable(query_Sql);
+                            bulk.WriteToServer(data);
+                        }
+                        else if (writeType == WrireType.DataReader)
+                        {
+                            reader = ExecuteReader(query_Sql);
+                            bulk.WriteToServer(reader);
+                            reader.Close();
+                        }
+                    }
+                    return true;
+                }
+                catch (Exception ex)
+                {
+                    throw ex;
+                }
+            }
+            else
+            {
+                throw new Exception("未实现批量处理功能！");
+            }
         }
         #endregion
 

@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Data;
 using System.Data.Common;
+using System.Data.SqlClient;
 using System.Linq;
 using System.Text;
 
@@ -35,6 +36,7 @@ namespace SharpDB.SPI
 
         DbDataReader ExecuteReader(string strSql, int times = 30, params IDataParameter[] cmdParms);
 
+
         #endregion
 
         #region 执行
@@ -46,6 +48,8 @@ namespace SharpDB.SPI
         int ExecuteSqlTran(Hashtable strSqlList);
 
         DataSet RunProcedure(string storedProcName, int times = 30, params IDataParameter[] parameters);
+
+        bool BulkCopy(string query_Sql, string connstring, string tableName, DataTable data, WrireType writeType = WrireType.DataTable, Dictionary<string,string> columnMappings = null);
 
         #endregion
     }

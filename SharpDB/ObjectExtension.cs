@@ -10,7 +10,7 @@ using System.Text;
 
 namespace SharpDB
 {
-    internal static class ObjectExtension
+    public static class ObjectExtension
     {
 
         #region 简单类型 转换方法
