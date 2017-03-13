@@ -49,7 +49,7 @@ namespace SharpDB.SPI
 
         DataSet RunProcedure(string storedProcName, int times = 30, params IDataParameter[] parameters);
 
-        bool BulkCopy(string query_Sql, string connstring, string tableName, DataTable data, WrireType writeType = WrireType.DataTable, Dictionary<string,string> columnMappings = null);
+        bool BulkCopy(string query_Sql, string connString, string tableName, WrireType writeType = WrireType.DataTable, Dictionary<string, string> columnMappings = null);
 
         #endregion
     }

@@ -561,10 +561,6 @@ namespace SharpDB
             }
             else
             {
-                //if (cInfo.ColumnName == "BKTXT" && newValue.ToString()== "涿州市利顺来保温材料厂010101010101011")
-                //{
-
-                //}
                 if (typeName.Contains("char"))
                 {
                     int len = 0;
@@ -584,17 +580,39 @@ namespace SharpDB
                 if (typeName.Contains("date"))
                 {
                     dbType = DbType.DateTime;
-                    newValue = value.ConvertTo<DateTime>(cInfo.ColumnName);
+                    try
+                    {
+                        newValue = value.ConvertTo<DateTime>(cInfo.ColumnName);
+                    }
+                    catch (Exception ex)
+                    {
+                        throw new ArgumentException(cInfo.ColumnName + "转换日期类型时失败！[" + value + "]", "value", ex);
+                    }
                 }
                 else if (typeName.Contains("uniqueidentifier"))
                 {
                     dbType = DbType.Guid;
-                    newValue = value.ConvertTo<Guid>(cInfo.ColumnName);
+                    try
+                    {
+                        newValue = value.ConvertTo<Guid>(cInfo.ColumnName);
+                    }
+                    catch (Exception ex)
+                    {
+                        throw new ArgumentException(cInfo.ColumnName + "转换Guid时失败！[" + value + "]", "value", ex);
+                    }
+                    
                 }
                 else if (typeName.Contains("numeric"))
                 {
                     dbType = DbType.Double;
-                    newValue = value.ConvertTo<double>(cInfo.ColumnName);
+                    try
+                    {
+                        newValue = value.ConvertTo<double>(cInfo.ColumnName);
+                    }
+                    catch (Exception ex)
+                    {
+                        throw new ArgumentException(cInfo.ColumnName + "转换Double时失败！[" + value + "]", "value", ex);
+                    }
                 }
                 else if (value is byte[])
                 {

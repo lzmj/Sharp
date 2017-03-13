@@ -57,7 +57,7 @@ namespace SharpDB
         {
             this.Db = db;
             Cache = new Hashtable(StringComparer.OrdinalIgnoreCase);
-
+            
             //初始化查询所有表
             initTableName();
 

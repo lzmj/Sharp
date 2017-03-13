@@ -198,7 +198,7 @@ namespace SharpDB
         }
         internal DbConnection CreateConn()
         {
-            return CreateConn(null);
+            return CreateConn(this.ConnectionString);
         }
 
         internal DbConnection CreateConn(string connectionString)
