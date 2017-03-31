@@ -29,19 +29,37 @@ namespace SharpDB
                 if (type != null)
                 {
                     object result = null;
-                    if (type.IsEnum)
+                    if (obj != null)
                     {
-                        result = Enum.Parse(type, obj.ToString(), true);
+                        if (type.IsAssignableFrom(typeof(string)))
+                        {
+                            result = obj.ToString();
+                        }
+                        else if (type.IsEnum)
+                        {
+                            result = Enum.Parse(type, obj.ToString(), true);
+                        }
+                        else if (type.IsAssignableFrom(typeof(Guid)))
+                        {
+                            result = Guid.Parse(obj.ToString());
+                        }
+                        else
+                        {
+                            result = Convert.ChangeType(obj, type);
+                        }
                     }
-                    else if (type.IsAssignableFrom(typeof(Guid)))
+                    else
                     {
-                        result = Guid.Parse(obj.ToString());
+                        if (type.IsAssignableFrom(typeof(string)) || type.IsAssignableFrom(typeof(object)))
+                        {
+                            result = null;
+                        }
+                        else
+                        {
+                            throw new Exception("不能将null值转换为" + type.Name + "类型!");
+                        }
                     }
-
-                    if (result != null)
-                    {
-                        return (TResult)result;
-                    }
+                    return (TResult)result;
                 }
                 return (TResult)Convert.ChangeType(obj, type);
             }
@@ -81,18 +99,37 @@ namespace SharpDB
             if (type != null)
             {
                 object result = null;
-                if (type.IsEnum)
+                if (obj != null)
                 {
-                    result = Enum.Parse(type, obj.ToString());
+                    if (type.IsAssignableFrom(typeof(string)))
+                    {
+                        result = obj.ToString();
+                    }
+                    else if (type.IsEnum)
+                    {
+                        result = Enum.Parse(type, obj.ToString(), true);
+                    }
+                    else if (type.IsAssignableFrom(typeof(Guid)))
+                    {
+                        result = Guid.Parse(obj.ToString());
+                    }
+                    else
+                    {
+                        result = Convert.ChangeType(obj, type);
+                    }
                 }
-                else if (type.IsAssignableFrom(typeof(Guid)))
+                else
                 {
-                    result = Guid.Parse(obj.ToString());
+                    if (type.IsAssignableFrom(typeof(string)) || type.IsAssignableFrom(typeof(object)))
+                    {
+                        result = null;
+                    }
+                    else
+                    {
+                        throw new Exception("不能将null值转换为" + type.Name + "类型!");
+                    }
                 }
-                if (result != null)
-                {
-                    return result;
-                }
+                return result;
             }
             return Convert.ChangeType(obj, type);
         }
@@ -244,7 +281,7 @@ namespace SharpDB
         public static T ConvertToObjectFromDR<T>(this DataRow row)
         {
             T obj = (T)Activator.CreateInstance(typeof(T));
-            obj = ConvertToObjectFromDR<T>(obj, row);
+            obj = ConvertToObjectFromDR<T>(row, obj);
             return obj;
         }
         /// <summary>
@@ -253,7 +290,7 @@ namespace SharpDB
         /// <param name="obj"></param>
         /// <param name="dt"></param>
         /// <returns></returns>
-        private static T ConvertToObjectFromDR<T>(T obj, DataRow row)
+        private static T ConvertToObjectFromDR<T>(this DataRow row, T obj)
         {
             Type type = obj.GetType();
             System.Reflection.PropertyInfo[] propInfo = type.GetProperties();
@@ -329,7 +366,7 @@ namespace SharpDB
             for (int i = 0; i < data.Rows.Count; i++)
             {
                 T obj = (T)Activator.CreateInstance(typeof(T));
-                obj = ConvertToObjectFromDR(obj, data.Rows[i]);
+                obj = ConvertToObjectFromDR(data.Rows[i], obj);
                 objs.Add(obj);
             }
             return objs;
